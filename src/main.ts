@@ -7,7 +7,7 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule, new ExpressAdapter(express()),);
     app.enableCors();
-    await app.listen(process.env.PORT || 8080, ()=> console.log('Server successfully started on port 6080'));
+    await app.listen(process.env.PORT || 8080, ()=> console.log('Server successfully started on port 8080'));
   }catch(e){
     console.log(e);
   }
