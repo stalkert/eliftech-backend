@@ -9,19 +9,15 @@ export type GoodDocument = HydratedDocument<Good>;
   },
 })
 export class Good {
-  id: string;
-
-  @Prop()
-  shopId: number;
-
-  @Prop()
+  @Prop({
+    required: true,
+  })
   name: string;
 
-  @Prop()
-  imageUrl: string;
-
-  @Prop()
-  price: number;
+  @Prop({
+    required: true,
+  })
+  isMeal: boolean;
 }
 
 export const GoodSchema = SchemaFactory.createForClass(Good);
