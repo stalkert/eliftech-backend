@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { GoodService } from './good.service';
 import { Good } from './schemas/good.schema';
 import { Roles } from '../core/decorators/roles.decorator';
@@ -21,7 +21,7 @@ export class GoodController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  @Roles(Role.Admin, Role.SuperAdmin)
+  @Roles(Role.Admin, Role.SuperAdmin, Role.User)
   getAllWithPagination(
     @Query('page') page: number,
     @Query('size') limit: number,
