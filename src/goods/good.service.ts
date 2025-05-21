@@ -2,9 +2,10 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectModel } from '@nestjs/mongoose';
 import { Good } from './schemas/good.schema';
 import { Model } from 'mongoose';
-import { GoodDto } from './dto/good.dto';
+import { GoodDto, GoodType } from './dto/good.dto';
 import { Direction } from '../core/models/sorting';
 import { List } from '../core/models/list';
+import { isNil } from '@nestjs/common/utils/shared.utils';
 
 @Injectable()
 export class GoodService {
@@ -27,23 +28,26 @@ export class GoodService {
     field: string,
     direction: Direction,
     search: string,
+    goodType: GoodType,
   ): Promise<List<GoodDto>> {
     const skip = page * limit;
     const pageSize = +limit;
+    const isMeal = goodType && goodType === GoodType.Meal ? true : undefined;
     let items;
-    let total;
+
     if (search) {
-      total = await this.goodModel.find({ name: { $regex: search, $options: 'i' } }).count();
+      const filterWithSearch = !isNil(isMeal)
+        ? { name: { $regex: search, $options: 'i' }, isMeal }
+        : { name: { $regex: search, $options: 'i' } };
       items = await this.goodModel
-        .find({ name: { $regex: search, $options: 'i' } })
+        .find(filterWithSearch)
         .skip(skip)
         .limit(limit)
         .sort({ [field]: direction })
         .exec();
     } else {
-      total = await this.goodModel.count();
       items = await this.goodModel
-        .find()
+        .find(!isNil(isMeal) ? { isMeal } : undefined)
         .skip(skip)
         .limit(limit)
         .sort({ [field]: direction })
@@ -51,7 +55,7 @@ export class GoodService {
     }
     return {
       items,
-      total,
+      total: items.length,
       pageSize,
       current: +page + 1,
     };

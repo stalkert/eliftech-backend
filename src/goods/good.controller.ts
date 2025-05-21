@@ -3,7 +3,7 @@ import { GoodService } from './good.service';
 import { Good } from './schemas/good.schema';
 import { Roles } from '../core/decorators/roles.decorator';
 import { Role } from '../core/roles/role.model';
-import { GoodDto } from './dto/good.dto';
+import { GoodDto, GoodType } from './dto/good.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Direction } from '../core/models/sorting';
 import { List } from '../core/models/list';
@@ -28,8 +28,10 @@ export class GoodController {
     @Query('field') field: string,
     @Query('direction') direction: Direction,
     @Query('search') search: string,
+    @Query('goodType') goodType: GoodType,
   ): Promise<List<Good>> {
-    return this.goodService.getAllWithPagination(page, limit, field, direction, search);
+    console.log(page, limit, field, direction, search, goodType);
+    return this.goodService.getAllWithPagination(page, limit, field, direction, search, goodType);
   }
 
   @UseGuards(JwtAuthGuard)
